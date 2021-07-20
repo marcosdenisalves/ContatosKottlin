@@ -1,0 +1,5 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="TextViewDefault" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">#F00F00</item>
+    </style>
+</resources>

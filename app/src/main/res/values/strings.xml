@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Contatos</string>
-    <string name="menu_1">Home</string>
-    <string name="menu_2">Exit</string>
+    <string name="menu_1">Adicionar contato</string>
+    <string name="menu_2">Historico de chamadas</string>
+
+    <string name="open_drawer">Abrir</string>
+    <string name="close_drawer">Fechar</string>
 </resources>
