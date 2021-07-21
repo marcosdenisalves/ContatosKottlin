@@ -1,6 +1,8 @@
 package com.myproject.contatos
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar;
 import android.os.Bundle
@@ -10,9 +12,12 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.content.edit
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.myproject.contatos.DetailActivity.Companion.EXTRA_CONTACT
 import com.myproject.contatos.controller.ContactAdapter
 import com.myproject.contatos.interfaces.ClickItemContactListener
@@ -29,8 +34,31 @@ class MainActivity : AppCompatActivity(), ClickItemContactListener {
         setContentView(R.layout.drawer_menu)
 
         iniDrawer()
+        fetchListContact()
         bindView()
-        updateList()
+    }
+
+    private fun fetchListContact() {
+        val list = arrayListOf(
+            Contact(
+                "Dênis Alves",
+                "(91) 98877-6655",
+                "img.png"
+            ),
+            Contact(
+                "Patricia Tereza",
+                "(91) 99988-7766",
+                "img.jpeg"
+            )
+        )
+        getInstanceSharedPreferences().edit {
+            putString("contacts", Gson().toJson(list))
+            commit()
+        }
+    }
+
+    private fun getInstanceSharedPreferences(): SharedPreferences {
+        return getSharedPreferences("com.myproject.contatos.PREFERENCES", Context.MODE_PRIVATE)
     }
 
     private fun iniDrawer() {
@@ -52,23 +80,17 @@ class MainActivity : AppCompatActivity(), ClickItemContactListener {
     private fun bindView() {
         rvList.adapter = adapter
         rvList.layoutManager = LinearLayoutManager(this)
+        updateList()
+    }
+
+    private fun getListContacts(): List<Contact> {
+        val list = getInstanceSharedPreferences().getString("contacts", "[]")
+        val turnsType = object : TypeToken<List<Contact>>() {}.type
+        return Gson().fromJson(list, turnsType)
     }
 
     private fun updateList() {
-        adapter.updateList(
-            arrayListOf(
-                Contact(
-                    "Dênis Alves",
-                    "(91) 98877-6655",
-                    "img.png"
-                ),
-                Contact(
-                    "Patricia Tereza",
-                    "(91) 99988-7766",
-                    "img.jpeg"
-                )
-            )
-        )
+        adapter.updateList(getListContacts())
     }
 
     private fun showToast(message: String) {
